@@ -3,7 +3,8 @@ import CafeInfo from '../CafeInfo/CafeInfo'
 import VoteOptions from '../VoteOptions/VoteOptions'
 import VoteStats from '../VoteStats/VoteStats'
 import { useState } from 'react'
-import { type Votes} from '../../types/votes.ts'
+import { type Votes, type VoteType} from '../../types/votes.ts'
+import Notification from '../Notification/Notification.tsx'
 
 
 
@@ -13,19 +14,15 @@ export default function App() {
 	neutral: 0,
 	bad: 0
 });
-const [isResetVisible, setIsResetVisible] = useState<boolean>(false);
 
-  const handleVote = ( type : keyof Votes )=> {
+
+  const handleVote = ( type : VoteType )=> {
     setVotes({...votes,
       [type] : votes[type] + 1});
-      setIsResetVisible(true);
-    };
-    
-    
-    
-    const resetVotes = () => {
       
-    setIsResetVisible(false);
+    };
+     
+    const resetVotes = () => {
     setVotes({
       good: 0,
       neutral: 0,
@@ -41,8 +38,9 @@ const [isResetVisible, setIsResetVisible] = useState<boolean>(false);
   return (
    <div className={css.app}>
     <CafeInfo/>
-    <VoteOptions onVote = {handleVote} onReset = {resetVotes} canReset = {isResetVisible}/>
-    <VoteStats votes = {votes} totalVotes = {totalVotes} positiveRate = {positiveRate}/>
+    <VoteOptions onVote = {handleVote} onReset = {resetVotes} canReset = {totalVotes}/>
+    {totalVotes > 0 ? (<VoteStats votes = {votes} totalVotes = {totalVotes} positiveRate = {positiveRate}/>) :
+    (<Notification />)}
    </div>
   );
 }
